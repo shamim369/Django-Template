@@ -4,6 +4,8 @@ from django.test import TestCase, SimpleTestCase
 from django.urls import reverse, resolve
 from app.psf_app.views import home, ProductAPIView
 
+# RUN - python manage.py test app.psf_app.tests.test_urls
+
 # Create your tests here.
 class TestUrls(SimpleTestCase):
 
