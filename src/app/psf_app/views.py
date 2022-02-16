@@ -1,9 +1,14 @@
+from django.http import HttpRequest
 from django.shortcuts import render
+from django.http import HttpResponse
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.db.models import Q
 from .models import Product
 from .serializers import ProductSerializer
+
+def home(request):
+    return render(request, 'index.html')
 
 class ProductAPIView(APIView):
 
