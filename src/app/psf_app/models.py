@@ -2,6 +2,7 @@ import datetime
 import uuid
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from django.core.exceptions import ValidationError
 
 class Product(models.Model):
 
@@ -24,7 +25,7 @@ def getDuration():
 
 class Author(models.Model):
     name = models.CharField(_('Name'), max_length=100)
-    email = models.EmailField(_('Email'), max_length=254, null=True, blank=True)
+    email = models.EmailField(_('Email'), max_length=254, unique=True, null=True, blank=True)
     mobile = models.CharField(_('Mobile'), max_length=20, null=True, blank=True)
     salary = models.FloatField(_('Salary'), null=True, blank=True)
 
@@ -82,8 +83,8 @@ class Article(models.Model):
     description = models.TextField(_('Description'), max_length=1000, null=True, blank=True)
     image = models.ImageField(upload_to='image', max_length=255, null=True, blank=True)
     document = models.FileField(upload_to='document', max_length=255, null=True, blank=True)
-    youtube_link = models.URLField(_('Youtube Link'), max_length=255)
-    tag = models.ManyToManyField(Tag)
+    youtube_link = models.URLField(_('Youtube Link'), max_length=255, null=True, blank=True)
+    tag = models.ManyToManyField(Tag, blank=True)
     num_stars = models.IntegerField(null=True, blank=True)
     publish_date = models.DateField(_('Publish Date'), null=True, blank=True)
     publish_time = models.TimeField(_('Publish Time'), null=True, blank=True)
@@ -96,6 +97,23 @@ class Article(models.Model):
 
     created_at = models.DateTimeField(_('Created at'), auto_now_add=True, auto_now=False, editable=False)
     updated_at = models.DateTimeField(_('Updated at'), auto_now_add=False, auto_now=True, editable=False)
+
+    # def clean(self, *args, **kwargs):
+    #     errors = {}
+    #     other_username = User.objects.filter(username__iexact=self.username)
+    #     other_email = User.objects.filter(email__iexact=self.email)
+    #     if self.pk:
+    #         other_username = other_username.exclude(pk=self.pk)
+    #         other_email = other_email.exclude(pk=self.pk)
+    #     if other_username.exists():
+    #         errors.setdefault('username',[]).append('Sorry! this username already exists.')
+
+    #     if other_email.exists():
+    #         errors.setdefault('email',[]).append('Sorry! this email already exists.')
+
+    #     if len(errors):
+    #         raise ValidationError(errors)
+
 
     def __str__(self):
         return self.title

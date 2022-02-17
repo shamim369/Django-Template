@@ -10,6 +10,16 @@ from .serializers import ProductSerializer
 def home(request):
     return render(request, 'index.html')
 
+
+from app.psf_app.forms.author_forms import AuthorCreationModelForm
+
+def crudModelFormView(request):
+    return render(request, 'model_form.html')
+
+
+
+
+
 class ProductAPIView(APIView):
 
     def get(self, request):
