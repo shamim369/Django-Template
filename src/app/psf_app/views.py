@@ -14,7 +14,17 @@ def home(request):
 from app.psf_app.forms.author_forms import AuthorCreationModelForm
 
 def crudModelFormView(request):
-    return render(request, 'model_form.html')
+
+    if request.method == 'POST':
+        form = AuthorCreationModelForm(request.POST)
+        if form.is_valid():
+            form.save()
+    else:
+        form = AuthorCreationModelForm()
+    context = {
+        'form': form
+    }
+    return render(request, 'model_form.html', context)
 
 
 
