@@ -23,17 +23,30 @@ def getDuration():
     return d
 
 class Author(models.Model):
-    name = models.CharField(max_length=100)
-    email = models.EmailField(max_length=254)
-    mobile = models.CharField(max_length=20)
-    salary = models.FloatField()
+    name = models.CharField(_('Name'), max_length=100)
+    email = models.EmailField(_('Email'), max_length=254, null=True, blank=True)
+    mobile = models.CharField(_('Mobile'), max_length=20, null=True, blank=True)
+    salary = models.FloatField(_('Salary'), null=True, blank=True)
+
+    def __str__(self):
+        return self.name
 
 class Tag(models.Model):
-    tag_name = models.CharField(max_length=50)
+    tag_name = models.CharField(_('Tag'), max_length=50, null=True, blank=True)
+
+    def __str__(self):
+        if self.tag_name:
+            return str(self.id) + "||" + self.tag_name
+        else:
+            return str(self.id)
 
 class Track(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable = False)
-    ip_address = models.GenericIPAddressField(_('IP Address'))
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    ip_address = models.GenericIPAddressField(_('IP Address'), null=True, blank=True)
+
+    def __str__(self):
+        return str(self.id)
+    
 
 class Article(models.Model):
     """
@@ -56,7 +69,7 @@ class Article(models.Model):
             EmailField              - It is a CharField that checks that the value is a valid email address.
             BinaryField             - A field to store raw binary data. 
             DurationField           - A field for storing periods of time.
-            
+
         Relationship Fields:
             1. ForeignKey       - A many-to-one relationship. Requires two positional arguments: the class to which the model is related and the on_delete option.
             2. ManyToManyField  - A many-to-many relationship. Requires a positional argument: the class to which the model is related, which works exactly the same as it does for ForeignKey, including recursive and lazy relationships.
@@ -65,16 +78,16 @@ class Article(models.Model):
     
     author = models.ForeignKey(Author, on_delete=models.CASCADE)
     title = models.CharField(_('Title'), max_length=255)
-    slug = models.SlugField(_('Slug'), max_length=255)
-    description = models.TextField(_('Description'), max_length=1000)
-    image = models.ImageField(upload_to=None, height_field=None, width_field=None, max_length=255)
-    document = models.FileField(upload_to=None, max_length=255)
+    slug = models.SlugField(_('Slug'), max_length=255, null=True, blank=True)
+    description = models.TextField(_('Description'), max_length=1000, null=True, blank=True)
+    image = models.ImageField(upload_to='image', max_length=255, null=True, blank=True)
+    document = models.FileField(upload_to='document', max_length=255, null=True, blank=True)
     youtube_link = models.URLField(_('Youtube Link'), max_length=255)
     tag = models.ManyToManyField(Tag)
-    num_stars = models.IntegerField()
-    publish_date = models.DateField(_('Publish Date'))
-    publish_time = models.TimeField(_('Publish Time'))
-    price = models.DecimalField(max_digits=5, decimal_places=2)
+    num_stars = models.IntegerField(null=True, blank=True)
+    publish_date = models.DateField(_('Publish Date'), null=True, blank=True)
+    publish_time = models.TimeField(_('Publish Time'), null=True, blank=True)
+    price = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
     is_active = models.BooleanField(default=False)
     track = models.OneToOneField(Track, null=True, blank=True, on_delete=models.SET_NULL)
 
@@ -84,3 +97,5 @@ class Article(models.Model):
     created_at = models.DateTimeField(_('Created at'), auto_now_add=True, auto_now=False, editable=False)
     updated_at = models.DateTimeField(_('Updated at'), auto_now_add=False, auto_now=True, editable=False)
 
+    def __str__(self):
+        return self.title
